@@ -279,3 +279,10 @@ code = True
 """
 '''
     assert align_assignment_expressions(static_code) == static_code
+
+def test_semicolon_in_string():
+    static_code = \
+"""
+foobar = "val with semicolon in:"
+"""
+    assert align_assignment_expressions(static_code) == static_code

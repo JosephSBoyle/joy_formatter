@@ -34,15 +34,19 @@ def align_assignment_expressions(code: str) -> list[str]:
                 for _, line in group
             )
 
-            # pre_equals_chars          = max(line.find("=") for _, line in group)
-            max_typed_variable_length = max(line.find(":") for _, line in group)
+            max_typed_variable_length = max(line.split("=")[0].find(":") for _, line in group)
+            max_type_hint_length      = 0
 
-            max_type_hint_length = max((len(line.split("=", 1)[0].split(":", 1)[1].strip()) for _, line in group if ":" in line),
-                                        default=-2)
-            pre_equals_chars     = max(pre_equals_chars,  # The +3 is the number of spaces in `var_name : type_hint =`
-                                       (max_typed_variable_length + max_type_hint_length + 4))
+            for _, line in group:
+                if (colon_idx := line.find(":")) > 0:
+                    equals_idx = line.find("=", colon_idx)
+                    hint = line[colon_idx + 1 : equals_idx].strip()
+                    max_type_hint_length = max(max_type_hint_length, len(hint))
+
+            pre_equals_chars = max(pre_equals_chars,  # The +3 is the number of spaces in `var_name : type_hint =`
+                                   (max_typed_variable_length + max_type_hint_length + 4))
             
-            for i, line in group:
+            for line_index, line in group:
                 var_name, value = line.split('=', 1)
                 if ":" in var_name:
                     var_name, type = var_name.split(":")
@@ -51,7 +55,7 @@ def align_assignment_expressions(code: str) -> list[str]:
                 
                 type_hint = f"{': '+ type.strip() if type else ''}"
                 padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
-                lines[i] = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
+                lines[line_index] = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
                 
                 group = []  # Clear the grouped lines.
 
@@ -59,6 +63,6 @@ def align_assignment_expressions(code: str) -> list[str]:
     return "\n".join(lines)
 
 if __name__ == "__main__":
-    filename = "t.py"
+    filename = "joy.py"
     code = open(filename, "r").read()
     print(align_assignment_expressions(code))
