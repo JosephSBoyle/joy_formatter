@@ -291,12 +291,8 @@ def test_TBD():
     code = \
 """
 type_hint = f"{': '+ type.strip() if type else ''}"
-padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
-lines[line_index] = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
 """
     assert align_assignment_expressions(code) == \
 """
-type_hint             = f"{': '+ type.strip() if type else ''}"
-padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
-lines[line_index]     = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
+type_hint = f"{': '+ type.strip() if type else ''}"
 """

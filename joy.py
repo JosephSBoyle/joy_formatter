@@ -38,14 +38,16 @@ def align_assignment_expressions(code: str) -> list[str]:
             max_type_hint_length      = 0
 
             for _, line in group:
-                if (colon_idx := line.find(":")) > 0:
-                    equals_idx = line.find("=", colon_idx)
+                # Check if there's a colon before an equals symbol
+                # (i.e type hint in a variable assignment or default function arg.)
+                if (colon_idx := line.find(":")) != -1 and (equals_idx := line.find("=", colon_idx)) != -1:
+                    # colon_idx +1 because the first char of the type hint is the one _after_ the colon
                     hint = line[colon_idx + 1 : equals_idx].strip()
                     max_type_hint_length = max(max_type_hint_length, len(hint))
 
             pre_equals_chars = max(pre_equals_chars,  # The +3 is the number of spaces in `var_name : type_hint =`
                                    (max_typed_variable_length + max_type_hint_length + 4))
-            
+
             for line_index, line in group:
                 var_name, value = line.split('=', 1)
                 if ":" in var_name:
