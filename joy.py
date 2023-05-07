@@ -8,16 +8,25 @@ typed_function_arg_definition = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*:\s*[a-
 
 # Note function args assignments can't be typed, except for in function definitions... TODO
 
-regexes = (normal_assignment_expr, typed_assignment_expr, function_arg_assignment_expr, typed_function_arg_definition)
+multiline_comment_start_expr = re.compile(r"\s{0,}\"\"\"|'''")
+"""Regex for if a line is the start of a multi-line comment like this one.
+
+Matches both single and double quotes.
+"""
+
+assignment_expressions = (normal_assignment_expr, typed_assignment_expr, function_arg_assignment_expr, typed_function_arg_definition)
 
 def align_assignment_expressions(code: str) -> list[str]:
     lines                        = code.split("\n")
     group: list[tuple[int, str]] = []
+    inside_comment               = False  # Are we inside a triple-quotes comment?
 
     for i, line in enumerate(lines):
-        if any(regex.match(line) for regex in regexes):
+        if multiline_comment_start_expr.match(line):
+            inside_comment = not inside_comment # Flip the value
+        elif any(expr.match(line) for expr in assignment_expressions):
             # Line contains one of the valid assignments.
-            if not line.endswith(":"):
+            if not line.endswith(":") and not inside_comment:
                 group.append((i, line))
         elif group:
             pre_equals_chars = max(

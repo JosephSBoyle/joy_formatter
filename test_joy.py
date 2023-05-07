@@ -240,3 +240,42 @@ if True:
 if True:
     x : int = y
 """
+
+def test_ignore_anything_in_triple_quoted_comment_double_quotes():
+    static_code = \
+"""
+'''
+This is a docstring.
+
+    :arg  football:
+    :type football: sphere
+
+Something = some thing
+Something_ = some other thing
+'''
+"""
+    assert align_assignment_expressions(static_code) == static_code
+
+def test_ignore_anything_in_triple_quoted_comment_single_quotes():
+    static_code = \
+'''
+"""
+This is a docstring.
+
+    :arg  football:
+    :type football: sphere
+
+Something = some thing
+Something_ = some other thing
+"""
+'''
+    assert align_assignment_expressions(static_code) == static_code
+
+def test_docstring_first_line_assignment():
+    static_code = \
+'''
+code = True
+"""looks_like_variable = True
+"""
+'''
+    assert align_assignment_expressions(static_code) == static_code
