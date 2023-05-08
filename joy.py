@@ -25,7 +25,6 @@ def _is_alignable_line(line: str) -> bool:
     Examples of valid lines are variable assignments as well as default function arguments, provided they are on their own line.
         `x = y`
         `x: int = y`
-    
     """
     return any(expr.match(line) for expr in assignment_expressions) \
         and not line.endswith(":") \
@@ -47,47 +46,41 @@ def align_assignment_expressions(code: str) -> list[str]:
         elif group:
             pre_equals_chars          = 0
             max_typed_variable_length = 0
+            max_type_hint_length      = 0
 
             for _, line in group:
                 pre_equals   = line.split("=")[0]
                 equals_index = len(pre_equals)
 
                 # Compute necessary lengths for handling typed variables
-                if ":" in pre_equals:
+                if (semicolon_index := pre_equals.find(":")) != -1:
                     var_name                  = pre_equals.split(":")[0]
                     var_name_length           = len(var_name.rstrip())
                     max_typed_variable_length = max(max_typed_variable_length, var_name_length)
 
-                # Number of characters before the assignment equals character
-                if equals_index > 0 and line[equals_index - 1] != " ":
+                    type_hint            = pre_equals[semicolon_index+1:].strip()
+                    max_type_hint_length = max(max_type_hint_length, len(type_hint))
+
+                if line[equals_index - 1] != " ":
+                    # Add 1 for the space character we're going to add.
                     equals_index += 1
                 pre_equals_chars = max(pre_equals_chars, equals_index)
-                
 
-            max_type_hint_length = 0
+            # the `4` here represents the number of chars other than the type hint and the variable name before
+            # the equals character: ``<var_name>_:_<type_hint>_=`` 3 empty spaces (underscores) plus the semicolon.
+            pre_equals_chars = max(pre_equals_chars, (max_typed_variable_length + max_type_hint_length + 4))
 
-            for _, line in group:
-                # Check if there's a colon before an equals symbol
-                # (i.e type hint in a variable assignment or default function arg.)
-                if (colon_idx := line.find(":")) != -1 and (equals_idx := line.find("=", colon_idx)) != -1:
-                    # colon_idx +1 because the first char of the type hint is the one _after_ the colon
-                    hint                 = line[colon_idx + 1 : equals_idx].strip()
-                    max_type_hint_length = max(max_type_hint_length, len(hint))
-
-            pre_equals_chars = max(pre_equals_chars,  # The +3 is the number of spaces in `var_name : type_hint =`
-                                   (max_typed_variable_length + max_type_hint_length + 4))
             for line_index, line in group:
                 var_name, value = line.split('=', 1)
+                type_hint       = ""
                 if ":" in var_name:
-                    var_name, type = var_name.split(":")
-                else:
-                    type = False
-                
-                type_hint             = f"{': '+ type.strip() if type else ''}"
+                    var_name, type_ = var_name.split(":")
+                    type_hint      = ': '+ type_.strip()
+
                 padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
                 lines[line_index]     = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
                 
-                group = []  # Clear the grouped lines.
+                group = []  # Empty the list of grouped lines.
 
     # Create a new string from all the joined strings.
     return "\n".join(lines)
@@ -97,7 +90,7 @@ if __name__ == "__main__":
     import sys
     file = sys.argv[1] if len(sys.argv) >= 2 else __file__
 
-    # Format this file
+    # Format the file and save it.
     code           = open(file, "r").read()
     formatted_code = align_assignment_expressions(code)
 
