@@ -16,6 +16,19 @@ Matches both single and double quotes.
 
 assignment_expressions = (normal_assignment_expr, typed_assignment_expr, function_arg_assignment_expr, typed_function_arg_definition)
 
+def _is_alignable_line(line: str) -> bool:
+    """Return `True` if the line contains an alignable expression.
+    
+    Examples of valid lines are variable assignments as well as default function arguments, provided they are on their own line.
+        `x = y`
+        `x: int = y`
+    
+    """
+    return any(expr.match(line) for expr in assignment_expressions) \
+        and not line.endswith(":") \
+            and not line.strip().startswith(("return ", "assert "))
+            # note the space after e.g 'return' so we only match the keyword, not e.g variables named return.*!
+
 def align_assignment_expressions(code: str) -> list[str]:
     lines                        = code.split("\n")
     group: list[tuple[int, str]] = []
@@ -24,11 +37,9 @@ def align_assignment_expressions(code: str) -> list[str]:
     for i, line in enumerate(lines):
         if multiline_comment_start_expr.match(line):
             inside_multiline_comment = not inside_multiline_comment # Flip the value
-        elif any(expr.match(line) for expr in assignment_expressions):
+        elif not inside_multiline_comment and _is_alignable_line(line):
             # Line contains one of the valid assignments and we're not inside a multiline comment.
-            # note the space after 'return' so we only match the keyword, not e.g variables named return.*!
-            if not line.endswith(":") and not line.strip().startswith("return ") and not inside_multiline_comment:
-                group.append((i, line))
+            group.append((i, line))
         elif group:
             pre_equals_chars = max(
                 (line.find("=") + (line[line.find("=") - 1] != " ") if "=" in line else -1)
@@ -58,7 +69,7 @@ def align_assignment_expressions(code: str) -> list[str]:
                 
                 type_hint = f"{': '+ type.strip() if type else ''}"
                 padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
-                lines[line_index] = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
+                lines[line_index]     = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
                 
                 group = []  # Clear the grouped lines.
 

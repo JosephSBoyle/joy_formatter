@@ -324,3 +324,20 @@ def test_indented_assignment_on_line_adjacent_to_named_initializer_argument():
     loss.requires_grad = True
     return SequenceClassifierOutput(loss.sum(), logits=torch.zeros_like(input_ids1))
 """
+
+def test_assertion_statement_ignored():
+    static_code = \
+"""
+foobar = 1
+assert foobar == 1
+"""
+    assert align_assignment_expressions(static_code) == static_code
+
+def test_non_adjacent_assignment_ignored():
+    static_code = \
+"""
+    input_ids1 = input_ids.squeeze()
+    if not torch.all((input_ids1 >= 0) & (input_ids1 <= self._num_embeddings)):
+        loss = torch.Tensor([0.])
+"""
+    assert align_assignment_expressions(static_code) == static_code
