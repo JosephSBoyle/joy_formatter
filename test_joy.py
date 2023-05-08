@@ -403,3 +403,13 @@ f'''
     """
 '''
     assert align_assignment_expressions(static_code) == static_code
+
+def test_formatting_is_idempotent():
+    code = \
+"""
+    lines = code.split("\n")
+    group: list[tuple[int, str]] = []
+"""
+    formatted_once  = align_assignment_expressions(code)
+    formatted_twice = align_assignment_expressions(formatted_once)
+    assert formatted_once == formatted_twice
