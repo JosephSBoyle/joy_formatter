@@ -8,7 +8,7 @@ typed_function_arg_definition = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*:\s*[a-
 
 # Note function args assignments can't be typed, except for in function definitions... TODO
 
-multiline_comment_start_expr = re.compile(r"^(?!\s{0,}\"\"\".*\"\"\"$)\s{0,}\"\"\"|'''")
+docstring_start_expr = re.compile(r"^(?!\s{0,}'{3}.*'''$)\s{0,}'{3}|^(?!\s{0,}\"{3}.*\"{3}$)\s{0,}\"{3}")
 """Regex for if a line is the start of a multi-line comment like this one.
 
 Matches both single and double quotes. NOTE: does not match single-line triple-quoted comments,
@@ -36,7 +36,7 @@ def align_assignment_expressions(code: str) -> list[str]:
     inside_multiline_comment     = False  # Are we inside a triple-quotes comment?
 
     for i, line in enumerate(lines):
-        if multiline_comment_start_expr.match(line):
+        if docstring_start_expr.match(line):
             inside_multiline_comment = not inside_multiline_comment # Flip the value
         elif not inside_multiline_comment and _is_alignable_line(line):
             # Line contains one of the valid assignments and we're not inside a multiline comment.
