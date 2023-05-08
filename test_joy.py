@@ -310,3 +310,17 @@ loss               = torch.Tensor([0.])
 loss.requires_grad = True
 return SequenceClassifierOutput(loss.sum(), logits=torch.zeros_like(input_ids1))
 """
+
+def test_indented_assignment_on_line_adjacent_to_named_initializer_argument():
+    code = \
+"""
+    loss = torch.Tensor([0.])
+    loss.requires_grad = True
+    return SequenceClassifierOutput(loss.sum(), logits=torch.zeros_like(input_ids1))
+"""
+    assert align_assignment_expressions(code) == \
+"""
+    loss               = torch.Tensor([0.])
+    loss.requires_grad = True
+    return SequenceClassifierOutput(loss.sum(), logits=torch.zeros_like(input_ids1))
+"""

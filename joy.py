@@ -19,14 +19,15 @@ assignment_expressions = (normal_assignment_expr, typed_assignment_expr, functio
 def align_assignment_expressions(code: str) -> list[str]:
     lines                        = code.split("\n")
     group: list[tuple[int, str]] = []
-    inside_comment               = False  # Are we inside a triple-quotes comment?
+    inside_multiline_comment     = False  # Are we inside a triple-quotes comment?
 
     for i, line in enumerate(lines):
         if multiline_comment_start_expr.match(line):
-            inside_comment = not inside_comment # Flip the value
+            inside_multiline_comment = not inside_multiline_comment # Flip the value
         elif any(expr.match(line) for expr in assignment_expressions):
-            # Line contains one of the valid assignments.
-            if not line.endswith(":") and not inside_comment:
+            # Line contains one of the valid assignments and we're not inside a multiline comment.
+            # note the space after 'return' so we only match the keyword, not e.g variables named return.*!
+            if not line.endswith(":") and not line.strip().startswith("return ") and not inside_multiline_comment:
                 group.append((i, line))
         elif group:
             pre_equals_chars = max(
@@ -65,6 +66,6 @@ def align_assignment_expressions(code: str) -> list[str]:
     return "\n".join(lines)
 
 if __name__ == "__main__":
-    filename = "joy.py"
+    filename = "t.py"
     code = open(filename, "r").read()
     print(align_assignment_expressions(code))
