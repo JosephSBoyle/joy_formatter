@@ -30,12 +30,13 @@ def _is_alignable_line(line: str) -> bool:
     return any(expr.match(line) for expr in assignment_expressions) \
         and not line.endswith(":") \
             and not line.strip().startswith(("return ", "assert ", "'", '"'))
-            # note the space after e.g 'return' so we only match the keyword, not e.g variables named return.*!
+            # note 1: the space after e.g 'return' so we only match the keyword, not e.g variables named return.*!
+            # note 2: str().strip only strips leading and trailing whitespace; not the whitespace we're checking for.
 
 def align_assignment_expressions(code: str) -> list[str]:
-    lines                        = code.split("\n")
-    group: list[tuple[int, str]] = []
-    inside_multiline_comment     = False  # Are we inside a triple-quotes comment?
+    lines                         = code.split("\n")
+    group : list[tuple[int, str]] = []
+    inside_multiline_comment      = False  # Are we inside a triple-quotes comment?
 
     for i, line in enumerate(lines):
         if docstring_start_expr.match(line):
@@ -44,25 +45,37 @@ def align_assignment_expressions(code: str) -> list[str]:
             # Line contains one of the valid assignments and we're not inside a multiline comment.
             group.append((i, line))
         elif group:
-            pre_equals_chars = max(
-                (line.find("=") + (line[line.find("=") - 1] != " ") if "=" in line else -1)
-                for _, line in group
-            )
+            pre_equals_chars          = 0
+            max_typed_variable_length = 0
 
-            max_typed_variable_length = max(line.split("=")[0].find(":") for _, line in group)
-            max_type_hint_length      = 0
+            for _, line in group:
+                pre_equals = line.split("=")[0]
+                equals_index = len(pre_equals)
+
+                # Compute necessary lengths for handling typed variables
+                if ":" in pre_equals:
+                    var_name                  = pre_equals.split(":")[0]
+                    var_name_length           = len(var_name.rstrip())
+                    max_typed_variable_length = max(max_typed_variable_length, var_name_length)
+
+                # Number of characters before the assignment equals character
+                if equals_index > 0 and line[equals_index - 1] != " ":
+                    equals_index += 1
+                pre_equals_chars = max(pre_equals_chars, equals_index)
+                
+
+            max_type_hint_length = 0
 
             for _, line in group:
                 # Check if there's a colon before an equals symbol
                 # (i.e type hint in a variable assignment or default function arg.)
                 if (colon_idx := line.find(":")) != -1 and (equals_idx := line.find("=", colon_idx)) != -1:
                     # colon_idx +1 because the first char of the type hint is the one _after_ the colon
-                    hint = line[colon_idx + 1 : equals_idx].strip()
+                    hint                 = line[colon_idx + 1 : equals_idx].strip()
                     max_type_hint_length = max(max_type_hint_length, len(hint))
 
             pre_equals_chars = max(pre_equals_chars,  # The +3 is the number of spaces in `var_name : type_hint =`
                                    (max_typed_variable_length + max_type_hint_length + 4))
-
             for line_index, line in group:
                 var_name, value = line.split('=', 1)
                 if ":" in var_name:
@@ -70,7 +83,7 @@ def align_assignment_expressions(code: str) -> list[str]:
                 else:
                     type = False
                 
-                type_hint = f"{': '+ type.strip() if type else ''}"
+                type_hint             = f"{': '+ type.strip() if type else ''}"
                 padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
                 lines[line_index]     = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
                 
@@ -82,7 +95,7 @@ def align_assignment_expressions(code: str) -> list[str]:
 
 if __name__ == "__main__":
     # Format this file
-    code = open(__file__, "r").read()
+    code           = open(__file__, "r").read()
     formatted_code = align_assignment_expressions(code)
 
     with open(__file__, "w") as f:

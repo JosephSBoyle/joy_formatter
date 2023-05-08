@@ -1,4 +1,7 @@
+from pytest import mark
+
 from joy import align_assignment_expressions
+
 
 def test_base():
     code = \
@@ -390,7 +393,6 @@ def test_non_adjacent_assignment_ignored():
 """
     assert align_assignment_expressions(static_code) == static_code
 
-from pytest import mark
 @mark.parametrize("string_prefix", ("f", "r"))
 def test_triple_quote_string_prefix(string_prefix):
     static_code = \
@@ -407,8 +409,8 @@ f'''
 def test_formatting_is_idempotent():
     code = \
 """
-    lines = code.split("\n")
     group: list[tuple[int, str]] = []
+    lines = code
 """
     formatted_once  = align_assignment_expressions(code)
     formatted_twice = align_assignment_expressions(formatted_once)
