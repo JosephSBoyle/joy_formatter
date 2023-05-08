@@ -49,7 +49,7 @@ def align_assignment_expressions(code: str) -> list[str]:
             max_typed_variable_length = 0
 
             for _, line in group:
-                pre_equals = line.split("=")[0]
+                pre_equals   = line.split("=")[0]
                 equals_index = len(pre_equals)
 
                 # Compute necessary lengths for handling typed variables
@@ -94,9 +94,12 @@ def align_assignment_expressions(code: str) -> list[str]:
 
 
 if __name__ == "__main__":
+    import sys
+    file = sys.argv[1] if len(sys.argv) >= 2 else __file__
+
     # Format this file
-    code           = open(__file__, "r").read()
+    code           = open(file, "r").read()
     formatted_code = align_assignment_expressions(code)
 
-    with open(__file__, "w") as f:
+    with open(file, "w") as f:
         f.write(formatted_code)

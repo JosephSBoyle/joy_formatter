@@ -8,8 +8,31 @@ Seeing code formatted in this way brings me joy, so I'm writing a formatter in t
 use it in some projects of mine. Ideally, it will extend something like `black`'s formatting,
 which I by-and-large find to be great.
 
-## Examples
-TODO: add examples.
+## Example:
+Before:
+```python
+class Foo:
+    def __init__(self, config):
+        self.num_labels = config.num_labels
+        self.config = config
+
+        self.longformer = LongformerModel(config, add_pooling_layer=False)
+        self.first_linear = nn.Linear(config.hidden_size, config.hidden_size, bias=False)
+        self.second_linear = nn.Linear(config.hidden_size, config.num_labels, bias=False)
+        self.third_linear = nn.Linear(config.hidden_size, config.num_labels)
+```
+after applying `joy`:
+```python
+class Foo:
+    def __init__(self, config):
+        self.num_labels = config.num_labels
+        self.config     = config
+
+        self.longformer    = LongformerModel(config, add_pooling_layer=False)
+        self.first_linear  = nn.Linear(config.hidden_size, config.hidden_size, bias=False)
+        self.second_linear = nn.Linear(config.hidden_size, config.num_labels, bias=False)
+        self.third_linear  = nn.Linear(config.hidden_size, config.num_labels)
+```
 
 ## Installation
 TODO upload to pypy etc.
