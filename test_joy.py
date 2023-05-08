@@ -296,6 +296,38 @@ foo    = True
 foobar = True
 '''
 
+def test_single_line_docstring_indented():
+    static_code = \
+'''
+    code = True
+    """looks_like_variable = True"""
+    foo = True
+    foobar = True
+'''
+    assert align_assignment_expressions(static_code) == \
+'''
+    code = True
+    """looks_like_variable = True"""
+    foo    = True
+    foobar = True
+'''
+
+def test_single_line_docstring_triple_single_quotes():
+    static_code = \
+"""
+code = True
+'''looks_like_variable = True'''
+foo = True
+foobar = True
+"""
+    assert align_assignment_expressions(static_code) == \
+"""
+code = True
+'''looks_like_variable = True'''
+foo    = True
+foobar = True
+"""
+
 def test_semicolon_in_string():
     static_code = \
 """

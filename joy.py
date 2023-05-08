@@ -8,7 +8,7 @@ typed_function_arg_definition = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*:\s*[a-
 
 # Note function args assignments can't be typed, except for in function definitions... TODO
 
-multiline_comment_start_expr = re.compile(r"^(?!^\"\"\".*\"\"\"$)\s{0,}\"\"\"|'''")
+multiline_comment_start_expr = re.compile(r"^(?!\s{0,}\"\"\".*\"\"\"$)\s{0,}\"\"\"|'''")
 """Regex for if a line is the start of a multi-line comment like this one.
 
 Matches both single and double quotes. NOTE: does not match single-line triple-quoted comments,
@@ -27,7 +27,7 @@ def _is_alignable_line(line: str) -> bool:
     """
     return any(expr.match(line) for expr in assignment_expressions) \
         and not line.endswith(":") \
-            and not line.strip().startswith(("return ", "assert "))
+            and not line.strip().startswith(("return ", "assert ", "'", '"'))
             # note the space after e.g 'return' so we only match the keyword, not e.g variables named return.*!
 
 def align_assignment_expressions(code: str) -> list[str]:
