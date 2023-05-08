@@ -435,3 +435,21 @@ bar += bazbar
 bat -= bazbar
 baz /= bazbar
 """
+
+def test_align_multiline_function_declaration_type_hints():
+    code = \
+"""
+def f(
+    attention: torch.Tensor,
+    labels: np.ndarray,
+    logger: logging.Logger,    
+) -> tuple[torch.Tensor, bool]:
+"""
+    assert align_assignment_expressions(code) == \
+"""
+def f(
+    attention : torch.Tensor,
+    labels    : np.ndarray,
+    logger    : logging.Logger,    
+) -> tuple[torch.Tensor, bool]:
+"""
