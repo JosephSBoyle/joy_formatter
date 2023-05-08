@@ -280,6 +280,22 @@ code = True
 '''
     assert align_assignment_expressions(static_code) == static_code
 
+def test_single_line_docstring():
+    static_code = \
+'''
+code = True
+"""looks_like_variable = True"""
+foo = True
+foobar = True
+'''
+    assert align_assignment_expressions(static_code) == \
+'''
+code = True
+"""looks_like_variable = True"""
+foo    = True
+foobar = True
+'''
+
 def test_semicolon_in_string():
     static_code = \
 """
