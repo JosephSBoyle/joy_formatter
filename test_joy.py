@@ -415,3 +415,23 @@ def test_formatting_is_idempotent():
     formatted_once  = align_assignment_expressions(code)
     formatted_twice = align_assignment_expressions(formatted_once)
     assert formatted_once == formatted_twice
+
+def test_handle_non_assignment_equals_character_operations():
+    code = \
+"""
+x = 1
+bazbar = 2
+foo %= bazbar
+bar += bazbar
+bat -= bazbar
+baz /= bazbar
+"""
+    assert align_assignment_expressions(code) == \
+"""
+x      = 1
+bazbar = 2
+foo %= bazbar
+bar += bazbar
+bat -= bazbar
+baz /= bazbar
+"""
