@@ -1,6 +1,6 @@
 import re
 
-normal_assignment_expr = re.compile(r"^(?!\s*#)[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*=\s*[a-zA-Z0-9\"[({_.\D+]+")
+normal_assignment_expr = re.compile(r"^(?!\s*#|\")[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*=\s*[a-zA-Z0-9\"[({_.\D+]+")
 typed_assignment_expr  = re.compile(r"^(?!\s*#)[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*:\s*[a-zA-Z_]+\s*=\s*[a-zA-Z0-9\"[({_.\D+]+")
 
 function_arg_assignment_expr  = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*=\s*[a-zA-Z0-9\"[({_]+")
@@ -8,10 +8,11 @@ typed_function_arg_definition = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*:\s*[a-
 
 # Note function args assignments can't be typed, except for in function definitions... TODO
 
-multiline_comment_start_expr = re.compile(r"\s{0,}\"\"\"|'''")
+multiline_comment_start_expr = re.compile(r"^(?!^\"\"\".*\"\"\"$)\s{0,}\"\"\"|'''")
 """Regex for if a line is the start of a multi-line comment like this one.
 
-Matches both single and double quotes.
+Matches both single and double quotes. NOTE: does not match single-line triple-quoted comments,
+such as single-line docstrings.
 """
 
 assignment_expressions = (normal_assignment_expr, typed_assignment_expr, function_arg_assignment_expr, typed_function_arg_definition)
