@@ -389,3 +389,17 @@ def test_non_adjacent_assignment_ignored():
         loss = torch.Tensor([0.])
 """
     assert align_assignment_expressions(static_code) == static_code
+
+from pytest import mark
+@mark.parametrize("string_prefix", ("f", "r"))
+def test_triple_quote_string_prefix(string_prefix):
+    static_code = \
+f'''
+    {string_prefix}"""
+    labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size,)`, `optional`):
+    Labels for computing the sequence classification/regression loss. Indices should be in :obj:`[0, ...,
+    config.num_labels - 1]`. If :obj:`config.num_labels == 1` a regression loss is computed (Mean-Square loss),
+    If :obj:`config.num_labels > 1` a classification loss is computed (Cross-Entropy).
+    """
+'''
+    assert align_assignment_expressions(static_code) == static_code

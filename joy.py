@@ -8,11 +8,13 @@ typed_function_arg_definition = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*:\s*[a-
 
 # Note function args assignments can't be typed, except for in function definitions... TODO
 
-docstring_start_expr = re.compile(r"^(?!\s{0,}'{3}.*'''$)\s{0,}'{3}|^(?!\s{0,}\"{3}.*\"{3}$)\s{0,}\"{3}")
+docstring_start_expr = re.compile(r"^(?!\s{0,}'{3}.*'''$)\s{0,}[rf]*'{3}|^(?!\s{0,}\"{3}.*\"{3}$)\s{0,}[rf]*\"{3}")
 """Regex for if a line is the start of a multi-line comment like this one.
 
 Matches both single and double quotes. NOTE: does not match single-line triple-quoted comments,
 such as single-line docstrings.
+
+Prefixed strings like: r'''foobar''' and f'''baz''' are also allowed, with either double or single quotes.
 """
 
 assignment_expressions = (normal_assignment_expr, typed_assignment_expr, function_arg_assignment_expr, typed_function_arg_definition)
