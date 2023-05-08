@@ -453,3 +453,17 @@ def f(
     logger    : logging.Logger,    
 ) -> tuple[torch.Tensor, bool]:
 """
+
+def test_indexed_assignment():
+    static_code = \
+"""
+attention_mask[:, 0] = 1
+"""
+    assert align_assignment_expressions(static_code) == static_code
+
+def test_type_hinted_indexed_assignment():
+    static_code = \
+"""
+attention_mask[:, 0]: int = 1
+"""
+    assert align_assignment_expressions(static_code) == static_code
