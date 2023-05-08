@@ -79,7 +79,11 @@ def align_assignment_expressions(code: str) -> list[str]:
     # Create a new string from all the joined strings.
     return "\n".join(lines)
 
+
 if __name__ == "__main__":
-    filename = "t.py"
-    code = open(filename, "r").read()
-    print(align_assignment_expressions(code))
+    # Format this file
+    code = open(__file__, "r").read()
+    formatted_code = align_assignment_expressions(code)
+
+    with open(__file__, "w") as f:
+        f.write(formatted_code)
