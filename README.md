@@ -38,7 +38,7 @@ class Foo:
 TODO upload to pypy etc.
 
 #### Dev-Notes
-The `rt` file is meant as a shorthand to  run the tests.
+The `./rt` command is used as a shorthand to  run the tests, passing any flags to `pytest`.
 Sort of how some people use a `test` command in their makefiles and invoke `make test`
 to run their tests.
 
