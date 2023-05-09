@@ -6,7 +6,7 @@ typed_assignment_expr  = re.compile(r"^(?!\s*#)[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*:
 function_arg_assignment_expr  = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*=\s*[a-zA-Z0-9\"[({_]+")
 typed_function_arg_definition = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*:\s*[a-zA-Z.]+\s*=\s*[a-zA-Z0-9\"[({_]+")
 
-type_hint_expression = re.compile(r"^(?!\s*#)[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*:\s*[a-zA-Z_]+\s*")
+type_hint_expression = re.compile(r"^(?!\s*#)[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*:\s*[a-zA-Z_]+\s*")  # e.g foo: bar
 
 # Note function args assignments can't be typed, except for in function definitions... TODO
 
@@ -69,7 +69,7 @@ def align_assignment_expressions(code: str) -> list[str]:
 
                     # HACK - resolve with better regex match for 'untyped assignment'
                     if "]" in type_hint:
-                        type_hint = ""
+                        type_hint        = ""
                     max_type_hint_length = max(max_type_hint_length, len(type_hint))
 
                 if line[equals_index - 1] != " ":
@@ -89,16 +89,17 @@ def align_assignment_expressions(code: str) -> list[str]:
                     # HACK - remove RHS expression with better regex match for 'untyped assignment'
                     if ":" in var_name and ("[" not in var_name):
                         var_name, type_ = var_name.split(":")
-                        type_hint      = ': '+ type_.strip()
+                        type_hint       = ': '+ type_.strip()
 
                     padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
                     lines[line_index]     = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
                 else:
                     # REFACTOR ME
-                    var_name, type_ = line.split(":")
-                    type_hint      = ': '+ type_.strip()
+                    var_name, type_       = line.split(":")
+                    type_hint             = ': '+ type_.strip()
                     padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
                     lines[line_index]     = f"{padded_typed_var_name}"
+
             group = []  # Empty the list of grouped lines.
 
     # Create a new string from all the joined strings.
