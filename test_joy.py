@@ -450,7 +450,7 @@ def f(
 def f(
     attention : torch.Tensor,
     labels    : np.ndarray,
-    logger    : logging.Logger,    
+    logger    : logging.Logger,
 ) -> tuple[torch.Tensor, bool]:
 """
 

@@ -6,6 +6,8 @@ typed_assignment_expr  = re.compile(r"^(?!\s*#)[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*:
 function_arg_assignment_expr  = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*=\s*[a-zA-Z0-9\"[({_]+")
 typed_function_arg_definition = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*:\s*[a-zA-Z.]+\s*=\s*[a-zA-Z0-9\"[({_]+")
 
+type_hint_expression = re.compile(r"^(?!\s*#)[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*:\s*[a-zA-Z_]+\s*")
+
 # Note function args assignments can't be typed, except for in function definitions... TODO
 
 docstring_start_expr = re.compile(r"^(?!\s{0,}'{3}.*'''$)\s{0,}[rf]*'{3}|^(?!\s{0,}\"{3}.*\"{3}$)\s{0,}[rf]*\"{3}")
@@ -17,7 +19,7 @@ such as single-line docstrings.
 Prefixed strings like: r'''foobar''' and f'''baz''' are also allowed, with either double or single quotes.
 """
 
-assignment_expressions = (normal_assignment_expr, typed_assignment_expr, function_arg_assignment_expr, typed_function_arg_definition)
+expressions = (normal_assignment_expr, typed_assignment_expr, function_arg_assignment_expr, typed_function_arg_definition, type_hint_expression)
 
 def _is_alignable_line(line: str) -> bool:
     """Return `True` if the line contains an alignable expression.
@@ -26,7 +28,7 @@ def _is_alignable_line(line: str) -> bool:
         `x = y`
         `x: int = y`
     """
-    return any(expr.match(line) for expr in assignment_expressions) \
+    return any(expr.match(line) for expr in expressions) \
         and not line.endswith(":") \
             and not line.strip().startswith(("return ", "assert ", "'", '"'))
             # note 1: the space after e.g 'return' so we only match the keyword, not e.g variables named return.*!
@@ -49,7 +51,12 @@ def align_assignment_expressions(code: str) -> list[str]:
             max_type_hint_length      = 0
 
             for _, line in group:
-                pre_equals   = line.split("=")[0]
+                if "=" not in line:
+                    # Edge case: we're in a type hint expression, not an assignment one.
+                    pre_equals = line
+                else:
+                    pre_equals = line.split("=")[0]
+
                 equals_index = len(pre_equals)
 
                 # Compute necessary lengths for handling typed variables
@@ -75,18 +82,24 @@ def align_assignment_expressions(code: str) -> list[str]:
             pre_equals_chars = max(pre_equals_chars, (max_typed_variable_length + max_type_hint_length + 4))
 
             for line_index, line in group:
-                var_name, value = line.split('=', 1)
-                type_hint       = ""
-                
-                # HACK - remove RHS expression with better regex match for 'untyped assignment'
-                if ":" in var_name and ("[" not in var_name):
-                    var_name, type_ = var_name.split(":")
-                    type_hint      = ': '+ type_.strip()
+                if "=" in line:
+                    var_name, value = line.split('=', 1)
+                    type_hint       = ""
+                    
+                    # HACK - remove RHS expression with better regex match for 'untyped assignment'
+                    if ":" in var_name and ("[" not in var_name):
+                        var_name, type_ = var_name.split(":")
+                        type_hint      = ': '+ type_.strip()
 
-                padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
-                lines[line_index]     = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
-                
-                group = []  # Empty the list of grouped lines.
+                    padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
+                    lines[line_index]     = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
+                else:
+                    # REFACTOR ME
+                    var_name, type_ = line.split(":")
+                    type_hint      = ': '+ type_.strip()
+                    padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
+                    lines[line_index]     = f"{padded_typed_var_name}"
+            group = []  # Empty the list of grouped lines.
 
     # Create a new string from all the joined strings.
     return "\n".join(lines)
