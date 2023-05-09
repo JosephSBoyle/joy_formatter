@@ -1,7 +1,7 @@
 import re
 
 normal_assignment_expr = re.compile(r"^(?!\s*#|\")[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*(?<![-\+\%\/])=\s*[a-zA-Z0-9\"[({_.\D+]+")
-typed_assignment_expr  = re.compile(r"^(?!\s*#)[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*(?<![-\+\%\/]):\s*[a-zA-Z_]+\s*=\s*[a-zA-Z0-9\"[({_.\D+]+")
+typed_assignment_expr  = re.compile(r"^(?!\s*#)[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*:\s*[a-zA-Z_]+\s*=\s*[a-zA-Z0-9\"[({_.\D+]+")
 
 function_arg_assignment_expr  = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*=\s*[a-zA-Z0-9\"[({_]+")
 typed_function_arg_definition = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_]+\s*:\s*[a-zA-Z.]+\s*=\s*[a-zA-Z0-9\"[({_]+")
