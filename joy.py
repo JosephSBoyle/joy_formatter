@@ -54,11 +54,15 @@ def align_assignment_expressions(code: str) -> list[str]:
 
                 # Compute necessary lengths for handling typed variables
                 if (semicolon_index := pre_equals.find(":")) != -1:
-                    var_name                  = pre_equals.split(":")[0]
+                    var_name                  = pre_equals[:semicolon_index]
                     var_name_length           = len(var_name.rstrip())
                     max_typed_variable_length = max(max_typed_variable_length, var_name_length)
 
                     type_hint            = pre_equals[semicolon_index+1:].strip()
+
+                    # HACK - resolve with better regex match for 'untyped assignment'
+                    if "]" in type_hint:
+                        type_hint = ""
                     max_type_hint_length = max(max_type_hint_length, len(type_hint))
 
                 if line[equals_index - 1] != " ":
@@ -73,7 +77,9 @@ def align_assignment_expressions(code: str) -> list[str]:
             for line_index, line in group:
                 var_name, value = line.split('=', 1)
                 type_hint       = ""
-                if ":" in var_name:
+                
+                # HACK - remove RHS expression with better regex match for 'untyped assignment'
+                if ":" in var_name and ("[" not in var_name):
                     var_name, type_ = var_name.split(":")
                     type_hint      = ': '+ type_.strip()
 
