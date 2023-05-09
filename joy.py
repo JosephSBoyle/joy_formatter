@@ -52,7 +52,8 @@ def align_assignment_expressions(code: str) -> list[str]:
 
             for _, line in group:
                 if "=" not in line:
-                    # Edge case: we're in a type hint expression, not an assignment one.
+                    # Edge case: we're in a non-assignment type hint expression.
+                    # e.g ``foo: bar`` as opposed to ``foo: bar = ...``
                     pre_equals = line
                 else:
                     pre_equals = line.split("=")[0]
@@ -94,11 +95,9 @@ def align_assignment_expressions(code: str) -> list[str]:
                     padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
                     lines[line_index]     = f"{padded_typed_var_name:<{pre_equals_chars}}= {value.strip()}"
                 else:
-                    # REFACTOR ME
-                    var_name, type_       = line.split(":")
-                    type_hint             = ': '+ type_.strip()
-                    padded_typed_var_name = f"{var_name:<{max_typed_variable_length + 1}}{type_hint}"
-                    lines[line_index]     = f"{padded_typed_var_name}"
+                    # Edge case: we're in a non-assignment type hint expression.
+                    var_name, type_hint = line.split(":")
+                    lines[line_index]   = f"{var_name:<{max_typed_variable_length + 1}}: {type_hint.strip()}"
 
             group = []  # Empty the list of grouped lines.
 
