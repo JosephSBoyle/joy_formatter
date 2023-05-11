@@ -34,14 +34,16 @@ def _is_alignable_line(line: str) -> bool:
             # note 1: the space after e.g 'return' so we only match the keyword, not e.g variables named return.*!
             # note 2: str().strip only strips leading and trailing whitespace; not the whitespace we're checking for.
 
-def align_assignment_expressions(code: str) -> list[str]:
+def align_assignment_expressions(code: str) -> str:
     lines                         = code.split("\n")
     group : list[tuple[int, str]] = []
     inside_multiline_comment      = False  # Are we inside a triple-quotes comment?
 
     for i, line in enumerate(lines):
         if docstring_start_expr.match(line):
-            inside_multiline_comment = not inside_multiline_comment # Flip the value
+            # We're entering a multiline comment or leaving one.
+            # Either way, we flip the value of this variable.
+            inside_multiline_comment = not inside_multiline_comment
         elif not inside_multiline_comment and _is_alignable_line(line):
             # Line contains one of the valid assignments and we're not inside a multiline comment.
             group.append((i, line))
