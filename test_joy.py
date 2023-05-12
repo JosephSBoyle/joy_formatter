@@ -471,7 +471,7 @@ attention_mask[:, 0]: int = 1
 def test_single_line_function_assignment():
     static_code = \
 """
-progress_bar.set_postfix(loss=epoch_loss / completed_steps)
+progress_bar.set_postfix(loss = epoch_loss / completed_steps)
 """
     assert align_assignment_expressions(static_code) == static_code
 
