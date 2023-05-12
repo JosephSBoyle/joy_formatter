@@ -467,3 +467,28 @@ def test_type_hinted_indexed_assignment():
 attention_mask[:, 0]: int = 1
 """
     assert align_assignment_expressions(static_code) == static_code
+
+def test_single_line_function_assignment():
+    static_code = \
+"""
+progress_bar.set_postfix(loss=epoch_loss / completed_steps)
+"""
+    assert align_assignment_expressions(static_code) == static_code
+
+def handle_python_3_11_function_arg_type_hints():
+    code = \
+"""
+    def foo(
+        bar: int | None = None,
+        bazbaz=None
+    ):
+        return bar
+"""
+    assert align_assignment_expressions(code) == \
+"""
+ def foo(
+        bar : int | None = None,
+        bazbaz           = None
+    ):
+        return bar
+"""
