@@ -115,4 +115,4 @@ if __name__ == "__main__":
 
     import sys
     lines = sys.stdin.read()
-    print(align_assignment_expressions(lines))
+    print(align_assignment_expressions(lines), end="")
