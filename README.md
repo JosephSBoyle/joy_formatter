@@ -34,8 +34,25 @@ class Foo:
         self.third_linear  = nn.Linear(config.hidden_size, config.num_labels)
 ```
 
-## Installation
-TODO upload to pypy etc.
+## VScode Installation
+1. Git clone this repo.
+2. Copy the full path to `joy.py`
+3. Install the 'custom local formatters extension'
+4. Open the `settings.json` file by pressing ctrl+shift+p and selecting "Open user settings json".
+5. Add these key-value pairs. 
+
+```json
+    "python.autoComplete.extraPaths": [],
+    "python.analysis.extraPaths": [],
+    "customLocalFormatters.formatters": [
+        {
+          "command": "python <PATH TO YOUR joy.py SCRIPT HERE>",
+          "languages": ["python"]
+        }
+    ],
+```
+
+6. Replace `<PATH TO YOUR joy.py SCRIPT HERE>` with the path from step #2!
 
 #### Dev-Notes
 The `./rt` command is used as a shorthand to  run the tests, passing any flags to `pytest`.

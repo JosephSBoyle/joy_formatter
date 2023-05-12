@@ -68,7 +68,7 @@ def align_assignment_expressions(code: str) -> str:
                     var_name_length           = len(var_name.rstrip())
                     max_typed_variable_length = max(max_typed_variable_length, var_name_length)
 
-                    type_hint            = pre_equals[semicolon_index+1:].strip()
+                    type_hint = pre_equals[semicolon_index+1:].strip()
 
                     # HACK - resolve with better regex match for 'untyped assignment'
                     if "]" in type_hint:
@@ -108,12 +108,11 @@ def align_assignment_expressions(code: str) -> str:
 
 
 if __name__ == "__main__":
+    # Test
+    x = 1
+    yy = 2
+    zzz: int = 3
+
     import sys
-    file = sys.argv[1] if len(sys.argv) >= 2 else __file__
-
-    # Format the file and save it.
-    code           = open(file, "r").read()
-    formatted_code = align_assignment_expressions(code)
-
-    with open(file, "w") as f:
-        f.write(formatted_code)
+    lines = sys.stdin.read()
+    print(align_assignment_expressions(lines))
