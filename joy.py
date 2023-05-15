@@ -82,7 +82,11 @@ def align_assignment_expressions(code: str) -> str:
 
             # the `4` here represents the number of chars other than the type hint and the variable name before
             # the equals character: ``<var_name>_:_<type_hint>_=`` 3 empty spaces (underscores) plus the semicolon.
-            pre_equals_chars = max(pre_equals_chars, (max_typed_variable_length + max_type_hint_length + 4))
+            if max_type_hint_length:
+                max_type_hint_length += 4
+
+            type_hint_pre_equals_chars = max_typed_variable_length + max_type_hint_length
+            pre_equals_chars = max(pre_equals_chars, type_hint_pre_equals_chars)
 
             for line_index, line in group:
                 if "=" in line:

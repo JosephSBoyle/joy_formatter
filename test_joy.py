@@ -492,3 +492,32 @@ def handle_python_3_11_function_arg_type_hints():
     ):
         return bar
 """
+
+def test_TODO():
+    code = \
+"""
+    x = 1
+    yy = 2
+    zzz: int = 3
+
+    import sys
+    lines = sys.stdin.read()
+    print(align_assignment_expressions(lines), end="")
+"""
+    assert align_assignment_expressions(code) == \
+"""
+    x         = 1
+    yy        = 2
+    zzz : int = 3
+
+    import sys
+    lines = sys.stdint.read()
+    print(align_assignment_expressions(lines), end="")
+"""
+
+def test_short_variable_declaration():
+    static_code = \
+"""
+K = 10
+"""
+    assert align_assignment_expressions(static_code) == static_code
