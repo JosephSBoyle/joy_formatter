@@ -493,27 +493,12 @@ def handle_python_3_11_function_arg_type_hints():
         return bar
 """
 
-def test_TODO():
-    code = \
+def test_keyword_argument_not_aligned():
+    static_code = \
 """
-    x = 1
-    yy = 2
-    zzz: int = 3
-
-    import sys
-    lines = sys.stdin.read()
     print(align_assignment_expressions(lines), end="")
 """
-    assert align_assignment_expressions(code) == \
-"""
-    x         = 1
-    yy        = 2
-    zzz : int = 3
-
-    import sys
-    lines = sys.stdint.read()
-    print(align_assignment_expressions(lines), end="")
-"""
+    assert align_assignment_expressions(static_code) == static_code
 
 def test_short_variable_declaration():
     static_code = \
