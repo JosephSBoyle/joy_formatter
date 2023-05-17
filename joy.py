@@ -19,7 +19,15 @@ such as single-line docstrings.
 Prefixed strings like: r'''foobar''' and f'''baz''' are also allowed, with either double or single quotes.
 """
 
-expressions = (normal_assignment_expr, typed_assignment_expr, function_arg_assignment_expr, typed_function_arg_definition, type_hint_expression)
+alignable_expressions = (
+    normal_assignment_expr,
+    typed_assignment_expr,
+    function_arg_assignment_expr,
+    typed_function_arg_definition,
+    type_hint_expression,
+)
+
+assignment_within_single_line_function_call = re.compile(r"\([^\(]*=.*\)") # e.g my_func(keyword_arg=foobar)
 
 def _is_alignable_line(line: str) -> bool:
     """Return `True` if the line contains an alignable expression.
@@ -29,15 +37,14 @@ def _is_alignable_line(line: str) -> bool:
         `x: int = y`
     """
     ### TODO REFACTOR ME ###
-    if not any(expr.match(line) for expr in expressions):
+    if not any(expr.match(line) for expr in alignable_expressions):
+        # The line isn't an assignment so we don't care about it!
         return False
 
     if line.endswith((":", "(", "{")):
+        # ':' means we're on the conditional line of an 'if' block.
         # '(' means we're at the start of a multiline function call or object instantiation!
         # '{' means we're at the start of a multiline dictionary instantiation.
-        #   
-        #   *Technically also a multi-line set instantiation, but that's irrelevant since that won't have
-        #    any lines matching an assignment.
         return False
     
     if line.strip().startswith(("return ", "assert ", "'", '"')):
@@ -45,6 +52,9 @@ def _is_alignable_line(line: str) -> bool:
         # note 2: str().strip only strips leading and trailing whitespace; not the whitespace we're checking for.
         return False
     
+    if assignment_within_single_line_function_call.search(line):
+        return False
+
     return True
 
 def align_assignment_expressions(code: str) -> str:
@@ -85,7 +95,8 @@ def align_assignment_expressions(code: str) -> str:
 
                     # HACK - resolve with better regex match for 'untyped assignment'
                     if "]" in type_hint:
-                        type_hint        = ""
+                        type_hint = ""
+
                     max_type_hint_length = max(max_type_hint_length, len(type_hint))
 
                 if line[equals_index - 1] != " ":
@@ -125,11 +136,7 @@ def align_assignment_expressions(code: str) -> str:
 
 
 if __name__ == "__main__":
-    # Test
-    x = 1
-    yy = 2
-    zzz: int = 3
-
     import sys
     lines = sys.stdin.read()
+    # Printing to stdout is how the vscode extension gets your formatted code back.
     print(align_assignment_expressions(lines), end="")
