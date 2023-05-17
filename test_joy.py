@@ -506,3 +506,19 @@ def test_short_variable_declaration():
 K = 10
 """
     assert align_assignment_expressions(static_code) == static_code
+
+def test_multiline_class_instantiation():
+    code = \
+"""
+x = dict(
+    foo=bar,
+    bazbaz=xxx
+)
+"""
+    assert align_assignment_expressions(code) == \
+"""
+x = dict(
+    foo    = bar,
+    bazbaz = xxx
+)
+"""
