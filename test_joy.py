@@ -522,3 +522,35 @@ x = dict(
     bazbaz = xxx
 )
 """
+
+def test_multiline_tuple_instantiation():
+    code = \
+"""
+x = (
+    foo=bar,
+    bazbaz=xxx
+)
+"""
+    assert align_assignment_expressions(code) == \
+"""
+x = (
+    foo    = bar,
+    bazbaz = xxx
+)
+"""
+
+def test_multiline_dict_instantiation():
+    code = \
+"""
+x = {
+    foo    : bar,
+    bazbaz : xxx
+}
+"""
+    assert align_assignment_expressions(code) == \
+"""
+x = {
+    foo    : bar,
+    bazbaz : xxx
+}
+"""

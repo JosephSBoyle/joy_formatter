@@ -28,11 +28,24 @@ def _is_alignable_line(line: str) -> bool:
         `x = y`
         `x: int = y`
     """
-    return any(expr.match(line) for expr in expressions) \
-        and not line.endswith(":") \
-            and not line.strip().startswith(("return ", "assert ", "'", '"'))
-            # note 1: the space after e.g 'return' so we only match the keyword, not e.g variables named return.*!
-            # note 2: str().strip only strips leading and trailing whitespace; not the whitespace we're checking for.
+    ### TODO REFACTOR ME ###
+    if not any(expr.match(line) for expr in expressions):
+        return False
+
+    if line.endswith((":", "(", "{")):
+        # '(' means we're at the start of a multiline function call or object instantiation!
+        # '{' means we're at the start of a multiline dictionary instantiation.
+        #   
+        #   *Technically also a multi-line set instantiation, but that's irrelevant since that won't have
+        #    any lines matching an assignment.
+        return False
+    
+    if line.strip().startswith(("return ", "assert ", "'", '"')):
+        # note 1: the space after e.g 'return' so we only match the keyword, not e.g variables named return.*!
+        # note 2: str().strip only strips leading and trailing whitespace; not the whitespace we're checking for.
+        return False
+    
+    return True
 
 def align_assignment_expressions(code: str) -> str:
     lines                         = code.split("\n")
@@ -86,7 +99,7 @@ def align_assignment_expressions(code: str) -> str:
                 max_type_hint_length += 4
 
             type_hint_pre_equals_chars = max_typed_variable_length + max_type_hint_length
-            pre_equals_chars = max(pre_equals_chars, type_hint_pre_equals_chars)
+            pre_equals_chars           = max(pre_equals_chars, type_hint_pre_equals_chars)
 
             for line_index, line in group:
                 if "=" in line:
