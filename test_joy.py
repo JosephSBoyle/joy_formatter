@@ -554,3 +554,21 @@ x = {
     bazbaz : xxx
 }
 """
+
+def test_different_indentations_not_aligned():
+    code = \
+"""
+for i in range(self.Y):
+    code = dicts['ind2c'][i]
+    weights[i] = code_embs[code]
+self.U.weight.data = torch.Tensor(weights).clone()
+self.final.weight.data = torch.Tensor(weights).clone()
+"""
+    assert align_assignment_expressions(code) == \
+"""
+for i in range(self.Y):
+    code       = dicts['ind2c'][i]
+    weights[i] = code_embs[code]
+self.U.weight.data     = torch.Tensor(weights).clone()
+self.final.weight.data = torch.Tensor(weights).clone()
+"""
