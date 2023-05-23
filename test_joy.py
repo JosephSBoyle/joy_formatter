@@ -573,6 +573,17 @@ self.U.weight.data     = torch.Tensor(weights).clone()
 self.final.weight.data = torch.Tensor(weights).clone()
 """
 
+def test_different_indentations_not_aligned_2():
+    static_code = \
+"""
+if self.model_mode == "laat":
+    hidden_output = outputs[0].view(batch_size, num_chunks*chunk_size, -1)
+elif self.model_mode == "laat-split":
+    hidden_output = outputs[0].view(batch_size*num_chunks, chunk_size, -1)
+weights = torch.tanh(self.first_linear(hidden_output))
+"""
+    assert align_assignment_expressions(static_code) == static_code
+
 def test_multiline_function_call_with_positional_arg_on_first_line():
     static_code = \
 """
