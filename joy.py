@@ -47,9 +47,8 @@ def _is_alignable_line(line: str) -> bool:
         # '{' means we're at the start of a multiline dictionary instantiation.
         return False
     
-    if line.strip().startswith(("return ", "assert ", "'", '"')):
-        # note 1: the space after e.g 'return' so we only match the keyword, not e.g variables named return.*!
-        # note 2: str().strip only strips leading and trailing whitespace; not the whitespace we're checking for.
+    if line.strip().startswith(("assert ", "'", '"')):
+        # line.strip only strips leading and trailing whitespace; not the whitespace we're checking for.
         return False
     
     if assignment_within_single_line_function_call.search(line):
@@ -134,7 +133,7 @@ def align_assignment_expressions(code: str) -> str:
             # Line contains one of the valid assignments and we're not inside a multiline comment.
 
             # Check that the indentation of the line is the same as the rest of the group.
-            # If it's not, handle that group and we'll start a new one.
+            # If it's not, handle that group and we'll start a new one
             if group and \
                 (len(group[-1][1]) - len(group[-1][1].lstrip())) != (len(line) - len(line.lstrip())):
                 
