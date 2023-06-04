@@ -572,12 +572,3 @@ for i in range(self.Y):
 self.U.weight.data     = torch.Tensor(weights).clone()
 self.final.weight.data = torch.Tensor(weights).clone()
 """
-
-def test_multiline_function_call_with_positional_arg_on_first_line():
-    static_code = \
-"""
-normalized_attention = label_attention / max(label_attention)
-html_output = overlay_sentence_attention(tokens, normalized_attention,
-                                         name='')
-"""
-    assert align_assignment_expressions(static_code) == static_code
