@@ -27,7 +27,9 @@ alignable_expressions = (
     type_hint_expression,
 )
 
-assignment_within_single_line_function_call = re.compile(r"\([^\(]*=.*\)") # e.g my_func(keyword_arg=foobar)
+# e.g `foo(bar=baz)`
+call_with_named_argument = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_\s.\,\(\)]+\([^\(]*=.*\)")
+
 
 def _is_alignable_line(line: str) -> bool:
     """Return `True` if the line contains an alignable expression.
@@ -51,7 +53,7 @@ def _is_alignable_line(line: str) -> bool:
         # line.strip only strips leading and trailing whitespace; not the whitespace we're checking for.
         return False
     
-    if assignment_within_single_line_function_call.search(line):
+    if call_with_named_argument.match(line):
         return False
 
     return True
