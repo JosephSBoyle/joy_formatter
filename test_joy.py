@@ -583,3 +583,20 @@ elif self.model_mode == "laat-split":
 weights = torch.tanh(self.first_linear(hidden_output))
 """
     assert align_assignment_expressions(static_code) == static_code
+
+
+### Real Examples ###
+
+def test_align_indented_lines():
+    code = \
+"""
+            self.first_linear = nn.Linear(config.hidden_size, config.hidden_size, bias=False)
+            self.second_linear = nn.Linear(config.hidden_size, config.num_labels, bias=False)
+            self.third_linear = nn.Linear(config.hidden_size, config.num_labels)
+"""
+    assert align_assignment_expressions(code) == \
+"""
+            self.first_linear  = nn.Linear(config.hidden_size, config.hidden_size, bias=False)
+            self.second_linear = nn.Linear(config.hidden_size, config.num_labels, bias=False)
+            self.third_linear  = nn.Linear(config.hidden_size, config.num_labels)
+"""
