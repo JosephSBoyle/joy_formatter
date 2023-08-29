@@ -600,3 +600,17 @@ def test_align_indented_lines():
             self.second_linear = nn.Linear(config.hidden_size, config.num_labels, bias=False)
             self.third_linear  = nn.Linear(config.hidden_size, config.num_labels)
 """
+
+def test_format_on_last_line():
+    code =\
+"""
+split = "train"
+n_docs = 50
+language = "gpt-english" # "spanish"
+model_name = MODEL_NAME"""
+    assert align_assignment_expressions(code) == \
+"""
+split      = "train"
+n_docs     = 50
+language   = "gpt-english" # "spanish"
+model_name = MODEL_NAME"""
