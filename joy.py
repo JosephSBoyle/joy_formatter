@@ -147,6 +147,16 @@ def align_assignment_expressions(code: str) -> str:
         elif group:
             _handle_assignment_group(lines, group)
             group = []
+
+    if group:
+        # Edge case.
+        # Handle the last assignment group - only occurs if the group is at the very
+        # end of the file, and the file has no additional e.g empty lines at the end.
+        #
+        # PEP-8 specifies that this shouldn't happen though;)
+        _handle_assignment_group(lines, group)
+        group = []
+
     # Create a new string from all the joined strings.
     return "\n".join(lines)
 
