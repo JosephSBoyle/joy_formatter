@@ -58,7 +58,7 @@ def _is_alignable_line(line: str) -> bool:
 
     return True
 
-def _handle_assignment_group(lines: list[str], group: list[tuple[int, str]]): # TODO type hinting
+def _handle_assignment_group(lines: list[str], group: list[tuple[int, str]]) -> None: # TODO type hinting
     """Align assignments for a group of assignments on adjacent lines.
 
     Warning - mutates `lines`!
@@ -155,7 +155,6 @@ def align_assignment_expressions(code: str) -> str:
         #
         # PEP-8 specifies that this shouldn't happen though;)
         _handle_assignment_group(lines, group)
-        group = []
 
     # Create a new string from all the joined strings.
     return "\n".join(lines)
