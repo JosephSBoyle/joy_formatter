@@ -614,3 +614,12 @@ split      = "train"
 n_docs     = 50
 language   = "gpt-english" # "spanish"
 model_name = MODEL_NAME"""
+
+def test_multi_line_dataframe_code():
+    static_code =\
+"""
+division = df[df["class"] == 1]["weight"].sum() / \
+    df[df["class"] == 0]["weight"].sum()
+df[df["class"] == 0]["weight"] *= division
+"""
+    assert align_assignment_expressions(static_code) == static_code
