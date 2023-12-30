@@ -1,6 +1,0 @@
-README.md
-setup.py
-joy.egg-info/PKG-INFO
-joy.egg-info/SOURCES.txt
-joy.egg-info/dependency_links.txt
-joy.egg-info/top_level.txt
