@@ -1,6 +1,6 @@
 -   id: align-assignments
     name: align-assignments
     description: Aligns assignment expressions on adjacent lines.
-    entry: align-assignments
+    entry: python joy.py
     language: python
     types: [python]
