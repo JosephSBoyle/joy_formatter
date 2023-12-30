@@ -162,6 +162,24 @@ def align_assignment_expressions(code: str) -> str:
 
 if __name__ == "__main__":
     import sys
-    lines = sys.stdin.read()
-    # Printing to stdout is how the vscode extension gets your formatted code back.
-    print(align_assignment_expressions(lines), end="")
+
+    if len(sys.argv) > 1:
+        # If called with arguments, as pre-commit does e.g:
+        #   python joy.py --file1.py --file2.py
+
+        filename_args = sys.argv[1:]
+        for filename_arg in filename_args:
+            # --file.py -> file.py
+            filename = filename_arg.lstrip("--")
+
+            with open(filename, mode="r+") as file:
+                text = file.read()
+                formatted_text = align_assignment_expressions(text)
+                file.write(formatted_text)
+    else:
+        # If called as a standalone program, as the
+        # vscode-custom formatter extension does.
+
+        lines = sys.stdin.read()
+        # Printing to stdout is how the vscode extension gets your formatted code back.
+        print(align_assignment_expressions(lines), end="")
