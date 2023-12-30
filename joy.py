@@ -170,9 +170,10 @@ def main():
             # --file.py -> file.py
             filename = filename_arg.lstrip("--")
 
-            with open(filename, mode="r+") as file:
+            with open(filename, mode="r") as file:
                 text = file.read()
                 formatted_text = align_assignment_expressions(text)
+            with open(filename, mode="w") as file:
                 file.write(formatted_text)
     else:
         # If called as a standalone program, as the
