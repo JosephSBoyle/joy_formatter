@@ -1,0 +1,6 @@
+-   id: align-assignments
+    name: align-assignments
+    description: Aligns assignment expressions on adjacent lines.
+    entry: align-assignments
+    language: python
+    types: [python]
