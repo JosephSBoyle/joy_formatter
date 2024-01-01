@@ -624,9 +624,9 @@ df[df["class"] == 0]["weight"] *= division
 """
     assert align_assignment_expressions(static_code) == static_code
 
-def test_bot_code():
+def test_semicolon_not_type_hint_expression():
     static_code =\
-'''
+"""
 logging.info("content count: gifs: %s, imgs: %s", len(gifs), len(imgs))'
-'''
+"""
     assert align_assignment_expressions(static_code) == static_code
