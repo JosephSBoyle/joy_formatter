@@ -630,3 +630,10 @@ def test_semicolon_not_type_hint_expression():
 logging.info("content count: gifs: %s, imgs: %s", len(gifs), len(imgs))'
 """
     assert align_assignment_expressions(static_code) == static_code
+
+def test_arguments_to_decorator_expression():
+    static_code =\
+"""
+@tree.command(name="gif", description="Get a random gif...")
+"""
+    assert align_assignment_expressions(static_code) == static_code
