@@ -1,4 +1,5 @@
 import re
+import sys
 
 normal_assignment_expr = re.compile(r"^(?!\s*#|\")[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*(?<![-\+\%\/])=\s*[a-zA-Z0-9\"[({_.\D+]+")
 typed_assignment_expr  = re.compile(r"^(?!\s*#)[a-zA-Z_\D+][a-zA-Z0-9_.\D+]+\s*:\s*[a-zA-Z_]+\s*=\s*[a-zA-Z0-9\"[({_.\D+]+")
@@ -160,8 +161,26 @@ def align_assignment_expressions(code: str) -> str:
     return "\n".join(lines)
 
 
+def main():
+    if len(sys.argv) > 1:
+        # If called with arguments, as pre-commit does e.g:
+        #   python joy.py --file1.py --file2.py
+        filename_args = sys.argv[1:]
+        for filename_arg in filename_args:
+            # --file.py -> file.py
+            filename = filename_arg.lstrip("--")
+
+            with open(filename, mode="r") as file:
+                text = file.read()
+                formatted_text = align_assignment_expressions(text)
+            with open(filename, mode="w") as file:
+                file.write(formatted_text)
+    else:
+        # If called as a standalone program, as the
+        # vscode-custom formatter extension does.
+        lines = sys.stdin.read()
+        # Printing to stdout is how the vscode extension gets your formatted code back.
+        print(align_assignment_expressions(lines), end="")
+
 if __name__ == "__main__":
-    import sys
-    lines = sys.stdin.read()
-    # Printing to stdout is how the vscode extension gets your formatted code back.
-    print(align_assignment_expressions(lines), end="")
+    main()
