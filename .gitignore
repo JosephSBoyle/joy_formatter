@@ -1,2 +1,4 @@
 joy.egg-info/*
 build/*
+.vscode/
+__pycache__/
