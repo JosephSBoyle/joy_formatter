@@ -618,16 +618,16 @@ model_name = MODEL_NAME"""
 def test_multi_line_dataframe_code():
     static_code =\
 """
-division = df[df["class"] == 1]["weight"].sum() / \
-    df[df["class"] == 0]["weight"].sum()
-df[df["class"] == 0]["weight"] *= division
+df = pd.load_df("...")
+df[df["class"] == 0]["weight"] = 0
 """
     assert align_assignment_expressions(static_code) == static_code
 
 def test_semicolon_not_type_hint_expression():
     static_code =\
 """
-logging.info("content count: gifs: %s, imgs: %s", len(gifs), len(imgs))'
+logging.info("content count: gifs: %s, imgs: %s", len(gifs), len(imgs))
+logging.info('content count: gifs: %s, imgs: %s', len(gifs), len(imgs))
 """
     assert align_assignment_expressions(static_code) == static_code
 
