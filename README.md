@@ -1,38 +1,93 @@
 # joy-format: a python formatter for aligning adjacent assignment expressions
 --------------
-### Background
-Having tried Golang I grew to appreciate the automatic alignment of statements on adjacent lines.
-Personally, I find that it makes the code easier to scan and comprehend.
+I like like the aesthetic of assignment statements.
 
-Seeing code formatted in this way brings me joy, so I'm writing a formatter in the hope that I can
-use it in some projects of mine. Ideally, it will extend something like `black`'s formatting,
-which I by-and-large find to be great.
+Seeing code formatted in this way brings me _joy_, so I'm writing a formatter in the hope that I can use it in some projects of mine. Ideally, it will extend something like `black`'s formatting, which I by-and-large find to be great.
 
-## Example:
-Before:
+### Examples:
+#### Simple assignment example:
 ```python
-class Foo:
-    def __init__(self, config):
-        self.num_labels = config.num_labels
-        self.config = config
+# Before
+foobar = baz
+foo = foobar
 
-        self.longformer = LongformerModel(config, add_pooling_layer=False)
-        self.first_linear = nn.Linear(config.hidden_size, config.hidden_size, bias=False)
-        self.second_linear = nn.Linear(config.hidden_size, config.num_labels, bias=False)
-        self.third_linear = nn.Linear(config.hidden_size, config.num_labels)
+# After
+foobar = baz
+foo    = foobar
 ```
-after applying `joy`:
+#### More realistic example:
 ```python
-class Foo:
-    def __init__(self, config):
-        self.num_labels = config.num_labels
-        self.config     = config
+# Before
+self.first_linear = nn.Linear(config.hidden_size, config.hidden_size, bias=False)
+self.second_linear = nn.Linear(config.hidden_size, config.num_labels, bias=False)
+self.third_linear = nn.Linear(config.hidden_size, config.num_labels)
 
-        self.longformer    = LongformerModel(config, add_pooling_layer=False)
-        self.first_linear  = nn.Linear(config.hidden_size, config.hidden_size, bias=False)
-        self.second_linear = nn.Linear(config.hidden_size, config.num_labels, bias=False)
-        self.third_linear  = nn.Linear(config.hidden_size, config.num_labels)
+# After
+self.first_linear  = nn.Linear(config.hidden_size, config.hidden_size, bias=False)
+self.second_linear = nn.Linear(config.hidden_size, config.num_labels, bias=False)
+self.third_linear  = nn.Linear(config.hidden_size, config.num_labels)
 ```
+#### Method definition with default values:
+```python
+# Before
+def forward(
+    self,
+    input_ids: torch.Tensor = None,
+    attention_mask=None,
+    token_type_ids=None,
+    position_ids=None,
+    head_mask=None,
+    inputs_embeds=None,
+    labels=None,
+    output_attentions=None,
+    output_hidden_states=None,
+    return_dict=None,
+): ...
+
+# After
+def forward(
+    self,
+    input_ids : torch.Tensor = None,
+    attention_mask           = None,
+    token_type_ids           = None,
+    position_ids             = None,
+    head_mask                = None,
+    inputs_embeds            = None,
+    labels                   = None,
+    output_attentions        = None,
+    output_hidden_states     = None,
+    return_dict              = None,
+): ...
+```
+#### Type hinted function arguments:
+```python
+# Before
+def f(
+    attention: torch.Tensor,
+    labels: np.ndarray,
+    logger: logging.Logger,    
+) -> tuple[torch.Tensor, bool]: ...
+
+# After
+def f(
+    attention : torch.Tensor,
+    labels    : np.ndarray,
+    logger    : logging.Logger,
+) -> tuple[torch.Tensor, bool]: ...
+```
+## Pre-commit installation
+
+Add the following to your `.pre-commit-config.yaml` file. Note: compatibility with other linters /
+formatters is not guaranteed, please create an issue for any conflicts you encounter.
+
+```yaml
+repos:
+-   repo: https://github.com/JosephSBoyle/joy_formatter.git
+    rev: latest
+    hooks:
+    -   id: align-assignments
+```
+
 
 ## VScode Installation
 1. Git clone this repo.
