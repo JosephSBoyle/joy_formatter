@@ -637,3 +637,14 @@ def test_arguments_to_decorator_expression():
 @tree.command(name="gif", description="Get a random gif...")
 """
     assert align_assignment_expressions(static_code) == static_code
+
+def test_nested_triple_quotes_comment():
+    static_code =\
+"""
+'''
+\"\"\"
+foobar = baz
+baz = None
+'''
+"""
+    assert align_assignment_expressions(static_code) == static_code
