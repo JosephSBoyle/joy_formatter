@@ -656,3 +656,13 @@ def test_dataframe_in_return_statement(): # TODO rename
     return merged_df[merged_df["subreddit"] == subreddit]
 """
     assert align_assignment_expressions(static_code) == static_code
+
+def test_double_equals_in_non_assignment_statement():
+    static_code =\
+r"""
+    assert (
+        num_submitted_user_ids = = 125
+    ), f"Expected 125 users, found {num_submitted_user_ids} users in {submission_json_path}."
+"""
+    assert align_assignment_expressions(static_code) == static_code
+
