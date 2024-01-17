@@ -648,3 +648,11 @@ baz = None
 '''
 """
     assert align_assignment_expressions(static_code) == static_code
+
+def test_dataframe_in_return_statement(): # TODO rename
+    static_code =\
+"""
+    merged_df = merged_df[merged_df["label"].isin(labels)]
+    return merged_df[merged_df["subreddit"] == subreddit]
+"""
+    assert align_assignment_expressions(static_code) == static_code
