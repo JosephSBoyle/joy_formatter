@@ -50,7 +50,7 @@ def _is_alignable_line(line: str) -> bool:
         # '{' means we're at the start of a multiline dictionary instantiation.
         return False
     
-    if line.strip().startswith(("assert ", "'", '"', "@")):
+    if line.strip().startswith(("return ", "assert ", "'", '"', "@")):
         # line.strip only strips leading and trailing whitespace; not the whitespace we're checking for.
         return False
     
@@ -74,6 +74,7 @@ def _handle_assignment_group(lines: list[str], group: list[tuple[int, str]]) -> 
             # e.g ``foo: bar`` as opposed to ``foo: bar = ...``
             pre_equals = line
         else:
+            # Find the assignment equals.
             pre_equals = line.split("=")[0]
 
         equals_index = len(pre_equals)
