@@ -616,10 +616,12 @@ language   = "gpt-english" # "spanish"
 model_name = MODEL_NAME"""
 
 def test_multi_line_dataframe_code():
+    # To avoid breaking things, simply do nothing when a line contains double equals.
     static_code =\
 """
-df = pd.load_df("...")
-df[df["class"] == 0]["weight"] = 0
+x = pd.load_df("...")
+x[y == z] = 0
+x = x[z == y]
 """
     assert align_assignment_expressions(static_code) == static_code
 
@@ -638,16 +640,27 @@ def test_arguments_to_decorator_expression():
 """
     assert align_assignment_expressions(static_code) == static_code
 
-def test_nested_triple_quotes_comment():
-    static_code =\
+def test_format_code_in_nested_triple_quote_docstring():
+    code =\
 """
-'''
-\"\"\"
-foobar = baz
-baz = None
-'''
+class A:
+    '''
+    \"\"\"
+        foobar = A(...)
+        baz = A(..., kwargs=...)
+    \"\"\"
+    '''
 """
-    assert align_assignment_expressions(static_code) == static_code
+    assert align_assignment_expressions(code) ==\
+"""
+class A:
+    '''
+    \"\"\"
+        foobar = A(...)
+        baz    = A(..., kwargs=...)
+    \"\"\"
+    '''
+"""
 
 def test_dataframe_in_return_statement(): # TODO rename
     static_code =\

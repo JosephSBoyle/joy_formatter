@@ -33,7 +33,7 @@ call_with_named_argument = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_\s.\,\(\)]+\([^\(
 
 
 def _is_alignable_line(line: str) -> bool:
-    """Return `True` if the line contains an alignable expression.
+    """Return whether or not the line contains an alignable expression.
     
     Examples of valid lines are variable assignments as well as default function arguments, provided they are on their own line.
         `x = y`
@@ -43,7 +43,12 @@ def _is_alignable_line(line: str) -> bool:
     if not any(expr.match(line) for expr in alignable_expressions):
         # The line isn't an assignment so we don't care about it!
         return False
-
+    
+    if "==" in line:
+        # Lines of this form: `df[x == y] = z` are hard to find the assignment equals in.
+        # To avoid breaking code, consider these un-alignable for now.
+        return False
+    
     if line.endswith((":", "(", "{")):
         # ':' means we're on the conditional line of an 'if' block.
         # '(' means we're at the start of a multiline function call or object instantiation!
@@ -59,7 +64,7 @@ def _is_alignable_line(line: str) -> bool:
 
     return True
 
-def _handle_assignment_group(lines: list[str], group: list[tuple[int, str]]) -> None: # TODO type hinting
+def _handle_assignment_group(lines: list[str], group: list[tuple[int, str]]) -> None:
     """Align assignments for a group of assignments on adjacent lines.
 
     Warning - mutates `lines`!
