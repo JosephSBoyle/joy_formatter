@@ -679,3 +679,10 @@ r"""
 """
     assert align_assignment_expressions(static_code) == static_code
 
+def test_weird_alignment():
+    static_code =\
+"""
+    def x() : return None
+    _dict = vars().copy()
+"""
+    assert align_assignment_expressions(static_code) == static_code
