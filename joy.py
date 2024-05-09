@@ -33,11 +33,14 @@ call_with_named_argument = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_\s.\,\(\)]+\([^\(
 
 
 def _is_alignable_line(line: str) -> bool:
-    """Return whether or not the line contains an alignable expression.
-    
-    Examples of valid lines are variable assignments as well as default function arguments, provided they are on their own line.
-        `x = y`
-        `x: int = y`
+    """
+
+    Args:
+        line (str):
+
+    Returns:
+        bool:
+
     """
     ### TODO REFACTOR ME ###
     if not any(expr.match(line) for expr in alignable_expressions):
@@ -65,9 +68,12 @@ def _is_alignable_line(line: str) -> bool:
     return True
 
 def _handle_assignment_group(lines: list[str], group: list[tuple[int, str]]) -> None:
-    """Align assignments for a group of assignments on adjacent lines.
+    """
 
-    Warning - mutates `lines`!
+    Args:
+        lines (list[str]):
+        group (list[tuple[int, str]]):
+
     """
     pre_equals_chars          = 0
     max_typed_variable_length = 0
@@ -129,6 +135,15 @@ def _handle_assignment_group(lines: list[str], group: list[tuple[int, str]]) -> 
             lines[line_index]   = f"{var_name:<{max_typed_variable_length + 1}}: {type_hint.strip()}"
         
 def align_assignment_expressions(code: str) -> str:
+    """
+
+    Args:
+        code (str):
+
+    Returns:
+        str:
+
+    """
     lines                         = code.split("\n")
     group : list[tuple[int, str]] = []
     inside_multiline_comment      = False  # Are we inside a triple-quotes comment?
@@ -168,6 +183,9 @@ def align_assignment_expressions(code: str) -> str:
 
 
 def main():
+    """
+
+    """
     if len(sys.argv) > 1:
         # If called with arguments, as pre-commit does e.g:
         #   python joy.py --file1.py --file2.py
