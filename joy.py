@@ -33,11 +33,18 @@ call_with_named_argument = re.compile(r"\s*[a-zA-Z_][a-zA-Z0-9_\s.\,\(\)]+\([^\(
 
 
 def _is_alignable_line(line: str) -> bool:
-    """Return whether or not the line contains an alignable expression.
-    
-    Examples of valid lines are variable assignments as well as default function arguments, provided they are on their own line.
-        `x = y`
-        `x: int = y`
+    """
+    Determines whether a given line of code contains an alignable expression, which
+    are variable assignments or default function arguments on their own line. It
+    uses various patterns to identify such lines and returns `True` if found,
+    otherwise returns `False`.
+
+    Args:
+        line (str): line of code to check for an alignable expression.
+
+    Returns:
+        bool: a boolean indicating whether a given line contains an alignable expression.
+
     """
     ### TODO REFACTOR ME ###
     if not any(expr.match(line) for expr in alignable_expressions):
@@ -65,9 +72,18 @@ def _is_alignable_line(line: str) -> bool:
     return True
 
 def _handle_assignment_group(lines: list[str], group: list[tuple[int, str]]) -> None:
-    """Align assignments for a group of assignments on adjacent lines.
+    """
+    Aligns assignments for a group of lines by computing the lengths of variable
+    names, type hints, and spaces before the equals character, and padding the
+    results to ensure consistent formatting.
 
-    Warning - mutates `lines`!
+    Args:
+        lines (list[str]): list of code lines to be processed and aligned for a
+            group of assignments.
+        group (list[tuple[int, str]]): list of tuples containing line numbers and
+            line contents, which are aligned for a group of assignments on adjacent
+            lines.
+
     """
     pre_equals_chars          = 0
     max_typed_variable_length = 0
@@ -129,6 +145,19 @@ def _handle_assignment_group(lines: list[str], group: list[tuple[int, str]]) -> 
             lines[line_index]   = f"{var_name:<{max_typed_variable_length + 1}}: {type_hint.strip()}"
         
 def align_assignment_expressions(code: str) -> str:
+    """
+    Parses a given piece of code and groups assignment expressions within multiline
+    comments. It then checks if the indentation of each group is consistent, handles
+    any inconsistencies, and joins the lines into a single string.
+
+    Args:
+        code (str): Python code to be analyzed and transformed into aligned documentation.
+
+    Returns:
+        str: a revised version of the input code, with multi-line assignments
+        aligned and indented consistently throughout.
+
+    """
     lines                         = code.split("\n")
     group : list[tuple[int, str]] = []
     inside_multiline_comment      = False  # Are we inside a triple-quotes comment?
@@ -168,6 +197,11 @@ def align_assignment_expressions(code: str) -> str:
 
 
 def main():
+    """
+    Read contents from standard input and writes them to a file with aligned
+    assignment expressions after formatting them using `align_assignment_expressions()`.
+
+    """
     if len(sys.argv) > 1:
         # If called with arguments, as pre-commit does e.g:
         #   python joy.py --file1.py --file2.py
