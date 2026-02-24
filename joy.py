@@ -55,7 +55,7 @@ def _is_alignable_line(line: str) -> bool:
         # '{' means we're at the start of a multiline dictionary instantiation.
         return False
     
-    if line.strip().startswith(("return ", "assert ", "'", '"', "@")):
+    if line.strip().startswith(("return ", "assert ", "'", '"', "@", "def ", "class ")):
         # line.strip only strips leading and trailing whitespace; not the whitespace we're checking for.
         return False
     
