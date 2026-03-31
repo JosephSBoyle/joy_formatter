@@ -28,6 +28,12 @@ class LongformerForMultilabelClassification(LongformerPreTrainedModel):
     _keys_to_ignore_on_load_unexpected = [r"pooler"]
 
     def __init__(self, config):
+        """
+
+        Args:
+            config ():
+
+        """
         super().__init__(config)
         self.num_labels = config.num_labels
         self.config = config
@@ -53,11 +59,24 @@ class LongformerForMultilabelClassification(LongformerPreTrainedModel):
         output_hidden_states=None,
         return_dict=None,
     ):
-        r"""
-        labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size,)`, `optional`):
-            Labels for computing the sequence classification/regression loss. Indices should be in :obj:`[0, ...,
-            config.num_labels - 1]`. If :obj:`config.num_labels == 1` a regression loss is computed (Mean-Square loss),
-            If :obj:`config.num_labels > 1` a classification loss is computed (Cross-Entropy).
+        """
+
+        Args:
+            input_ids ():
+            attention_mask ():
+            global_attention_mask ():
+            head_mask ():
+            token_type_ids ():
+            position_ids ():
+            inputs_embeds ():
+            labels ():
+            output_attentions ():
+            output_hidden_states ():
+            return_dict ():
+
+        Returns:
+            :
+
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 

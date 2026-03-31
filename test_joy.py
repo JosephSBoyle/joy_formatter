@@ -4,6 +4,9 @@ from joy import align_assignment_expressions
 
 
 def test_base():
+    """
+
+    """
     code = \
 """
 foo = "123"
@@ -17,6 +20,9 @@ bar_bar = 111
 """
 
 def test_valid_right_side_expressions():
+    """
+
+    """
     code = \
 """
 foo = [1, ]
@@ -31,6 +37,9 @@ baz_baz = _MyPrivateType()
 """
 
 def test_type_hint():
+    """
+
+    """
     code = \
 """
 li: list = [1, 2, 3]
@@ -43,6 +52,9 @@ tup : tuple = (3, 2, 1)
 """
 
 def test_type_hint_with_untyped():
+    """
+
+    """
     code = \
 """
 li: list = [1, 2, 3]
@@ -57,6 +69,9 @@ untyped     = 7
 """
 
 def test_custom_type_hint():
+    """
+
+    """
     code = \
 """
 my_long_variable_name: list = [1, 2, 3]
@@ -71,6 +86,9 @@ untyped_var                   = 7
 """
 
 def test_custom_type_hint():
+    """
+
+    """
     code = \
 """
 my_long_variable_name: tuple  = (1, 2, 3)
@@ -85,6 +103,9 @@ untyped_var                         = 7
 """
 
 def test_multiline_function_args():
+    """
+
+    """
     code = \
 """
 my_func(
@@ -103,6 +124,9 @@ my_func(
 """
 
 def test_method_definition_with_default_values():
+    """
+
+    """
     code = \
 """
     def forward(
@@ -137,6 +161,9 @@ def test_method_definition_with_default_values():
 """
 
 def test_attribute_assignment():
+    """
+
+    """
     code = \
 """
 x.foo = [1, ]
@@ -151,6 +178,9 @@ zzz.baz_baz = _MyPrivateType()
 """
 
 def test_typed_attribute_assignment():
+    """
+
+    """
     code = \
 """
 x.foo: list = [1, ]
@@ -165,6 +195,9 @@ zzz.baz_baz : _MyPrivateType = _MyPrivateType()
 """
 
 def test_attribute_and_variable_assignment_on_adjacent_lines():
+    """
+
+    """
     code = \
 """
 siu_siu = (_MyPrivateType(), tuple())
@@ -177,6 +210,9 @@ x.foo   = [1, ]
 """
 
 def test_weird_characters():
+    """
+
+    """
     code = \
 """
 x.ñ = ñ
@@ -191,6 +227,9 @@ loss : ñ = torch.binary_cross_entropy_with_logits(ŷ3, labels)
 """
 
 def test_commented_adjacent_line():
+    """
+
+    """
     static_code = \
 """
 # commented_variable_assignment = 1
@@ -199,6 +238,9 @@ variable = loss.sum()
     assert align_assignment_expressions(static_code) == static_code
 
 def test_indented_commented_adjacent_line():
+    """
+
+    """
     static_code = \
 """
     # commented_variable_assignment = 1
@@ -207,6 +249,9 @@ def test_indented_commented_adjacent_line():
     assert align_assignment_expressions(static_code) == static_code
 
 def test_commented_and_typed_adjacent_line():
+    """
+
+    """
     static_code = \
 """
 # commented_variable_assignment: int = 1
@@ -215,6 +260,9 @@ variable = loss.sum()
     assert align_assignment_expressions(static_code) == static_code
 
 def test_commented_typed_function_arg_definition():
+    """
+
+    """
     static_code = \
 """
 def f(
@@ -225,6 +273,9 @@ def f(
     assert align_assignment_expressions(static_code) == static_code
 
 def test_conditional_line():
+    """
+
+    """
     static_code = \
 """
 if not torch.all((input_ids1 >= 0) & (input_ids1 <= self._num_embeddings)):
@@ -233,6 +284,9 @@ if not torch.all((input_ids1 >= 0) & (input_ids1 <= self._num_embeddings)):
     assert align_assignment_expressions(static_code) == static_code
 
 def test_conditional_line_2():
+    """
+
+    """
     static_code = \
 """
 if True:
@@ -245,6 +299,9 @@ if True:
 """
 
 def test_ignore_anything_in_triple_quoted_comment_double_quotes():
+    """
+
+    """
     static_code = \
 """
 '''
@@ -260,6 +317,9 @@ Something_ = some other thing
     assert align_assignment_expressions(static_code) == static_code
 
 def test_ignore_anything_in_triple_quoted_comment_single_quotes():
+    """
+
+    """
     static_code = \
 '''
 """
@@ -275,6 +335,9 @@ Something_ = some other thing
     assert align_assignment_expressions(static_code) == static_code
 
 def test_docstring_first_line_assignment():
+    """
+
+    """
     static_code = \
 '''
 code = True
@@ -284,6 +347,9 @@ code = True
     assert align_assignment_expressions(static_code) == static_code
 
 def test_single_line_docstring():
+    """
+
+    """
     static_code = \
 '''
 code = True
@@ -300,6 +366,9 @@ foobar = True
 '''
 
 def test_single_line_docstring_indented():
+    """
+
+    """
     static_code = \
 '''
     code = True
@@ -316,6 +385,9 @@ def test_single_line_docstring_indented():
 '''
 
 def test_single_line_docstring_triple_single_quotes():
+    """
+
+    """
     static_code = \
 """
 code = True
@@ -332,6 +404,9 @@ foobar = True
 """
 
 def test_semicolon_in_string():
+    """
+
+    """
     static_code = \
 """
 foobar = "val with semicolon in:"
@@ -339,6 +414,9 @@ foobar = "val with semicolon in:"
     assert align_assignment_expressions(static_code) == static_code
 
 def test_semicolon_in_string_2():
+    """
+
+    """
     code = \
 """
 type_hint = f"{': '+ type.strip() if type else ''}"
@@ -349,6 +427,9 @@ type_hint = f"{': '+ type.strip() if type else ''}"
 """
 
 def test_assignment_on_line_adjacent_to_named_initializer_argument():
+    """
+
+    """
     code = \
 """
 loss = torch.Tensor([0.])
@@ -363,6 +444,9 @@ return SequenceClassifierOutput(loss.sum(), logits=torch.zeros_like(input_ids1))
 """
 
 def test_indented_assignment_on_line_adjacent_to_named_initializer_argument():
+    """
+
+    """
     code = \
 """
     loss = torch.Tensor([0.])
@@ -377,6 +461,9 @@ def test_indented_assignment_on_line_adjacent_to_named_initializer_argument():
 """
 
 def test_assertion_statement_ignored():
+    """
+
+    """
     static_code = \
 """
 foobar = 1
@@ -385,6 +472,9 @@ assert foobar == 1
     assert align_assignment_expressions(static_code) == static_code
 
 def test_non_adjacent_assignment_ignored():
+    """
+
+    """
     static_code = \
 """
     input_ids1 = input_ids.squeeze()
@@ -395,6 +485,12 @@ def test_non_adjacent_assignment_ignored():
 
 @mark.parametrize("string_prefix", ("f", "r"))
 def test_triple_quote_string_prefix(string_prefix):
+    """
+
+    Args:
+        string_prefix ():
+
+    """
     static_code = \
 f'''
     {string_prefix}"""
@@ -407,6 +503,9 @@ f'''
     assert align_assignment_expressions(static_code) == static_code
 
 def test_formatting_is_idempotent():
+    """
+
+    """
     code = \
 """
     group: list[tuple[int, str]] = []
@@ -417,6 +516,9 @@ def test_formatting_is_idempotent():
     assert formatted_once == formatted_twice
 
 def test_handle_non_assignment_equals_character_operations():
+    """
+
+    """
     code = \
 """
 x = 1
@@ -437,6 +539,9 @@ baz /= bazbar
 """
 
 def test_align_multiline_function_declaration_type_hints():
+    """
+
+    """
     code = \
 """
 def f(
@@ -455,6 +560,9 @@ def f(
 """
 
 def test_indexed_assignment():
+    """
+
+    """
     static_code = \
 """
 attention_mask[:, 0] = 1
@@ -462,6 +570,9 @@ attention_mask[:, 0] = 1
     assert align_assignment_expressions(static_code) == static_code
 
 def test_type_hinted_indexed_assignment():
+    """
+
+    """
     static_code = \
 """
 attention_mask[:, 0]: int = 1
@@ -469,6 +580,9 @@ attention_mask[:, 0]: int = 1
     assert align_assignment_expressions(static_code) == static_code
 
 def test_single_line_function_assignment():
+    """
+
+    """
     static_code = \
 """
 progress_bar.set_postfix(loss = epoch_loss / completed_steps)
@@ -476,6 +590,9 @@ progress_bar.set_postfix(loss = epoch_loss / completed_steps)
     assert align_assignment_expressions(static_code) == static_code
 
 def handle_python_3_11_function_arg_type_hints():
+    """
+
+    """
     code = \
 """
     def foo(
@@ -494,6 +611,9 @@ def handle_python_3_11_function_arg_type_hints():
 """
 
 def test_keyword_argument_not_aligned():
+    """
+
+    """
     static_code = \
 """
     print(align_assignment_expressions(lines), end="")
@@ -501,6 +621,9 @@ def test_keyword_argument_not_aligned():
     assert align_assignment_expressions(static_code) == static_code
 
 def test_short_variable_declaration():
+    """
+
+    """
     static_code = \
 """
 K = 10
@@ -508,6 +631,9 @@ K = 10
     assert align_assignment_expressions(static_code) == static_code
 
 def test_multiline_class_instantiation():
+    """
+
+    """
     code = \
 """
 x = dict(
@@ -524,6 +650,9 @@ x = dict(
 """
 
 def test_multiline_tuple_instantiation():
+    """
+
+    """
     code = \
 """
 x = (
@@ -540,6 +669,9 @@ x = (
 """
 
 def test_multiline_dict_instantiation():
+    """
+
+    """
     code = \
 """
 x = {
@@ -556,6 +688,9 @@ x = {
 """
 
 def test_different_indentations_not_aligned():
+    """
+
+    """
     code = \
 """
 for i in range(self.Y):
@@ -574,6 +709,9 @@ self.final.weight.data = torch.Tensor(weights).clone()
 """
 
 def test_different_indentations_not_aligned_2():
+    """
+
+    """
     static_code = \
 """
 if self.model_mode == "laat":
@@ -588,6 +726,9 @@ weights = torch.tanh(self.first_linear(hidden_output))
 ### Real Examples ###
 
 def test_align_indented_lines():
+    """
+
+    """
     code = \
 """
             self.first_linear = nn.Linear(config.hidden_size, config.hidden_size, bias=False)
@@ -602,6 +743,9 @@ def test_align_indented_lines():
 """
 
 def test_format_on_last_line():
+    """
+
+    """
     code =\
 """
 split = "train"
@@ -617,6 +761,9 @@ model_name = MODEL_NAME"""
 
 def test_multi_line_dataframe_code():
     # To avoid breaking things, simply do nothing when a line contains double equals.
+    """
+
+    """
     static_code =\
 """
 x = pd.load_df("...")
@@ -626,6 +773,9 @@ x = x[z == y]
     assert align_assignment_expressions(static_code) == static_code
 
 def test_semicolon_not_type_hint_expression():
+    """
+
+    """
     static_code =\
 """
 logging.info("content count: gifs: %s, imgs: %s", len(gifs), len(imgs))
@@ -634,6 +784,9 @@ logging.info('content count: gifs: %s, imgs: %s', len(gifs), len(imgs))
     assert align_assignment_expressions(static_code) == static_code
 
 def test_arguments_to_decorator_expression():
+    """
+
+    """
     static_code =\
 """
 @tree.command(name="gif", description="Get a random gif...")
@@ -641,6 +794,9 @@ def test_arguments_to_decorator_expression():
     assert align_assignment_expressions(static_code) == static_code
 
 def test_format_code_in_nested_triple_quote_docstring():
+    """
+
+    """
     code =\
 """
 class A:
@@ -663,6 +819,9 @@ class A:
 """
 
 def test_dataframe_in_return_statement(): # TODO rename
+    """
+
+    """
     static_code =\
 """
     merged_df = merged_df[merged_df["label"].isin(labels)]
@@ -671,6 +830,9 @@ def test_dataframe_in_return_statement(): # TODO rename
     assert align_assignment_expressions(static_code) == static_code
 
 def test_double_equals_in_non_assignment_statement():
+    """
+
+    """
     static_code =\
 r"""
     assert (
@@ -680,6 +842,9 @@ r"""
     assert align_assignment_expressions(static_code) == static_code
 
 def test_weird_alignment():
+    """
+
+    """
     static_code =\
 """
     def x() : return None
